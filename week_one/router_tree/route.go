@@ -1,6 +1,9 @@
 package routertree
 
-import "strings"
+import (
+	"regexp"
+	"strings"
+)
 
 // IRoute 路有树接口声明
 type IRoute interface {
@@ -53,12 +56,24 @@ func (rt *Route) Hit(ctx *Context) {
 		}
 		node, ok := nodes.children[seg]
 		if !ok {
+			isNotFundPage := true
 			tpNode, ok := nodes.children["*"]
-			if !ok {
+			if ok {
+				node = tpNode
+				continue
+			}
+			for k, v := range nodes.children {
+				is, err := regexp.MatchString(k, seg)
+				if is && err == nil {
+					node = v
+					isNotFundPage = false
+					break
+				}
+			}
+			if isNotFundPage {
 				ctx.notFundPage()
 				return
 			}
-			node = tpNode
 		}
 		nodes = node
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -126,7 +127,7 @@ func (n *Node) Equal(y *Node) (string, bool) {
 
 func TestHttpHandler(t *testing.T) {
 	hs := New()
-	hs.Handle("GET", "/index/*/user/*/age", func(ctx *Context) {
+	hs.Handle("GET", "/index/-?[1-9]\\d*", func(ctx *Context) {
 		ctx.Writer.Write([]byte(SuccessPage))
 		ctx.Writer.WriteHeader(200)
 		ctx.Writer.Header().Add("Content-Type", "text/html")
@@ -138,4 +139,10 @@ func TestRouterGroup(t *testing.T) {
 	url := "user/home/123"
 	segs := strings.Split(url, "/")
 	fmt.Println(segs)
+}
+
+func TestZZ(t *testing.T) {
+	str := "18"
+	matched, err := regexp.MatchString("-?[1-9]\\d*", str)
+	fmt.Println(matched, err)
 }
