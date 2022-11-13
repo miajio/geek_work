@@ -53,21 +53,20 @@ func (rt *Route) Hit(ctx *Context) {
 		}
 		node, ok := nodes.children[seg]
 		if !ok {
-			ctx.notFundPage()
-			return
+			tpNode, ok := nodes.children["*"]
+			if !ok {
+				ctx.notFundPage()
+				return
+			}
+			node = tpNode
 		}
 		nodes = node
 	}
+	if nodes == nil || nodes.handlerFunc == nil {
+		ctx.notFundPage()
+		return
+	}
 	nodes.handlerFunc(ctx)
-	// for _, r := range rs {
-	// 	if r.method == ctx.Request.Method {
-	// 		if r.url == ctx.Request.URL.Path {
-	// 			r.handlerFunc(ctx)
-	// 			return
-	// 		}
-	// 	}
-	// }
-	// ctx.Writer.Write([]byte(undfindPage))
 }
 
 func (ctx *Context) notFundPage() {
@@ -103,6 +102,10 @@ func (rt *Route) Handle(method, relativePath string, handlerFunc HandlerFunc) {
 		if seg == "" || strings.ReplaceAll(seg, " ", "") == "" {
 			continue
 		}
+		if strings.ReplaceAll(seg, "*", "") == "" {
+			seg = "*"
+		}
+
 		children := root.childrenCreate(seg)
 		root = children
 	}

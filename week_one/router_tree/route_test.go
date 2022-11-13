@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -121,4 +122,20 @@ func (n *Node) Equal(y *Node) (string, bool) {
 		}
 	}
 	return "", true
+}
+
+func TestHttpHandler(t *testing.T) {
+	hs := New()
+	hs.Handle("GET", "/index/*/user/*/age", func(ctx *Context) {
+		ctx.Writer.Write([]byte(SuccessPage))
+		ctx.Writer.WriteHeader(200)
+		ctx.Writer.Header().Add("Content-Type", "text/html")
+	})
+	hs.Start(":8088")
+}
+
+func TestRouterGroup(t *testing.T) {
+	url := "user/home/123"
+	segs := strings.Split(url, "/")
+	fmt.Println(segs)
 }
