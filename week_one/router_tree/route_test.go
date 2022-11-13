@@ -132,6 +132,22 @@ func TestHttpHandler(t *testing.T) {
 		ctx.Writer.WriteHeader(200)
 		ctx.Writer.Header().Add("Content-Type", "text/html")
 	})
+	hs.Handle("GET", "/index/-?[1-9]\\d*/*/test", func(ctx *Context) {
+		ctx.Writer.Write([]byte(SuccessPage))
+		ctx.Writer.WriteHeader(200)
+		ctx.Writer.Header().Add("Content-Type", "text/html")
+	})
+	hs.Handle("GET", "/index/*/-?[1-9]\\d*", func(ctx *Context) {
+		ctx.Writer.Write([]byte(SuccessPage))
+		ctx.Writer.WriteHeader(200)
+		ctx.Writer.Header().Add("Content-Type", "text/html")
+	})
+	hs.Handle("GET", "/index/test", func(ctx *Context) {
+		ctx.Writer.Write([]byte(SuccessPage))
+		ctx.Writer.WriteHeader(200)
+		ctx.Writer.Header().Add("Content-Type", "text/html")
+	})
+
 	hs.Start(":8088")
 }
 

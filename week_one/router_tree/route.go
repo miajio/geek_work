@@ -57,11 +57,6 @@ func (rt *Route) Hit(ctx *Context) {
 		node, ok := nodes.children[seg]
 		if !ok {
 			isNotFundPage := true
-			tpNode, ok := nodes.children["*"]
-			if ok {
-				node = tpNode
-				continue
-			}
 			for k, v := range nodes.children {
 				is, err := regexp.MatchString(k, seg)
 				if is && err == nil {
@@ -70,7 +65,14 @@ func (rt *Route) Hit(ctx *Context) {
 					break
 				}
 			}
+
 			if isNotFundPage {
+				tpNode, ok := nodes.children["*"]
+				if ok {
+					node = tpNode
+					continue
+				}
+
 				ctx.notFundPage()
 				return
 			}

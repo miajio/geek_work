@@ -1,0 +1,12 @@
+
+###
+GET http://localhost:8088/index/123
+
+###
+GET http://localhost:8088/index/123/hello/test
+
+###
+GET http://localhost:8088/index/test/123
+
+###
+GET http://localhost:8088/index/test
